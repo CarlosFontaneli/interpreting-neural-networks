@@ -1,4 +1,3 @@
-# Imports
 import torch.nn.functional as F
 import torch.nn as nn
 
@@ -22,28 +21,24 @@ class CustomCNN(nn.Module):
         self.conv3 = nn.Conv2d(2*chanels, 4 * chanels, kernel_size, padding=kernel_size//2)
         self.bn3 = nn.BatchNorm2d(4 * chanels)
         self.relu3 = nn.ReLU()
-        self.pool3 = nn.MaxPool2d(2)
         
         # Fourth block (no pooling after this)
         self.conv4 = nn.Conv2d(4*chanels, 8 * chanels, kernel_size, padding=kernel_size//2)
         self.bn4 = nn.BatchNorm2d(8 * chanels)
         self.relu4 = nn.ReLU()
         
-        # Global Average Pooling
-        self.global_avg_pool = nn.AdaptiveAvgPool2d(1)
-
         # Fully connected layers
-        self.fc1 = nn.Linear(8*chanels, 128)
+        # Assuming input size is (1, 28, 28), after 2 max-pool layers of size 2 the spatial size is 7x7
+        self.fc1 = nn.Linear(8*chanels*7*7, 128)  
         self.drop1 = nn.Dropout(0.5)
         self.fc2 = nn.Linear(128, 2)  # 2 classes for Custom Dataset
 
     def forward(self, x):
         x = self.pool1(self.relu1(self.bn1(self.conv1(x))))
         x = self.pool2(self.relu2(self.bn2(self.conv2(x))))
-        x = self.pool3(self.relu3(self.bn3(self.conv3(x))))
+        x = self.relu3(self.bn3(self.conv3(x)))
         x = self.relu4(self.bn4(self.conv4(x)))
         
-        x = self.global_avg_pool(x)
         x = x.view(x.size(0), -1)  # Flatten the tensor
 
         x = self.drop1(F.relu(self.fc1(x)))
