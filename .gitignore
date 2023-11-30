@@ -1,0 +1,10 @@
+# Ignore Jupyter notebook checkpoints and python cache
+StudiesAndTests/.ipynb_checkpoints/
+StudiesAndTests/__pycache__/
+
+# Ignore specific directories
+StudiesAndTests/data/images/
+StudiesAndTests/data/labels/
+
+# Ignore all .zip files
+*.zip
