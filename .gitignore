@@ -2,6 +2,7 @@
 StudiesAndTests/.ipynb_checkpoints/
 StudiesAndTests/__pycache__/
 StudiesAndTests/Models/__pycache__/
+StudiesAndTests/Experiments/__pycache__/
 
 # Ignore specific directories
 StudiesAndTests/data/images/
