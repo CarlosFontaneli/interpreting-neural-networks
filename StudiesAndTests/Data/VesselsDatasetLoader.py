@@ -39,7 +39,7 @@ class SegmentationDataset(Dataset):
         return image, mask
 
 
-def get_dataset(batch_size = 8):
+def get_dataset(batch_size = 8, train_size = 0.8):
     transform = transforms.Compose([
         transforms.ToTensor(),
         transforms.CenterCrop((448, 448)),
@@ -54,7 +54,7 @@ def get_dataset(batch_size = 8):
 
 
     dataset_size = len(dataset)
-    train_size = int(dataset_size * 0.8)  # e.g., 80% for training
+    train_size = int(dataset_size * train_size)  
     val_size = dataset_size - train_size
 
     # Split the dataset
@@ -64,3 +64,19 @@ def get_dataset(batch_size = 8):
     test_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=False)
     
     return train_loader, test_loader
+
+def get_dataloader(batch_size = 8):
+    transform = transforms.Compose([
+        transforms.ToTensor(),
+        transforms.CenterCrop((448, 448)),
+    ]) 
+
+    # Paths to your image and mask directories
+    image_dir = "../Data/images/"
+    mask_dir = '../Data/labels/'
+
+    # Create the dataset
+    dataset = SegmentationDataset(image_dir, mask_dir, transform)
+
+
+    return DataLoader(dataset, batch_size=batch_size, shuffle=True)
