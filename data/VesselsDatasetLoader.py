@@ -46,8 +46,8 @@ def get_dataset(batch_size = 8, train_size = 0.8):
     ]) 
 
     # Paths to your image and mask directories
-    image_dir = "../Data/images/"
-    mask_dir = '../Data/labels/'
+    image_dir = "../data/images/"
+    mask_dir = '../data/labels/'
 
     # Create the dataset
     dataset = SegmentationDataset(image_dir, mask_dir, transform)
@@ -58,10 +58,10 @@ def get_dataset(batch_size = 8, train_size = 0.8):
     val_size = dataset_size - train_size
 
     # Split the dataset
-    train_dataset, train_dataset = random_split(dataset, [train_size, val_size])
+    train_dataset, test_dataset = random_split(dataset, [train_size, val_size])
 
     train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
-    test_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=False)
+    test_loader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False)
     
     return train_loader, test_loader
 
@@ -72,8 +72,8 @@ def get_dataloader(batch_size = 8):
     ]) 
 
     # Paths to your image and mask directories
-    image_dir = "../Data/images/"
-    mask_dir = '../Data/labels/'
+    image_dir = "../data/images/"
+    mask_dir = '../data/labels/'
 
     # Create the dataset
     dataset = SegmentationDataset(image_dir, mask_dir, transform)
