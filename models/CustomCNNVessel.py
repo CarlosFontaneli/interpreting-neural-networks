@@ -26,7 +26,7 @@ class CustomResNet(nn.Module):
         super(CustomResNet, self).__init__()
         
         # Encoder
-        self.conv1 = nn.Conv2d(1, 64, kernel_size=3, stride=2, padding=1, bias=False)
+        self.conv1 = nn.Conv2d(1, 64, kernel_size=3, stride=1, padding=1, bias=False)
         self.bn1 = nn.BatchNorm2d(64)
         self.relu = nn.ReLU()
         self.resblock1 = ResidualBlock(64, 128, stride=2)  # Adjusted stride
@@ -43,12 +43,12 @@ class CustomResNet(nn.Module):
         self.upconv3 = nn.ConvTranspose2d(256, 128, kernel_size=3, stride=2, padding=1, output_padding=1)
         self.upconv4 = nn.ConvTranspose2d(128, 64, kernel_size=3, stride=2, padding=1, output_padding=1)
         
-        self.upconv5 = nn.ConvTranspose2d(64, 1, kernel_size=3, stride=2, padding=1, output_padding=1)
+        #self.upconv5 = nn.ConvTranspose2d(64, 1, kernel_size=3, stride=2, padding=1, output_padding=1)
 
         
         
         # Final Layer
-        self.final = nn.Conv2d(1, num_classes, kernel_size=3, stride=1, padding=1)
+        self.final = nn.Conv2d(64, num_classes, kernel_size=3, stride=1, padding=1)
         
     def forward(self, x):
         # Encoder
@@ -71,8 +71,9 @@ class CustomResNet(nn.Module):
         x = self.upconv3(x)  
         x = x + x2         
         x = self.upconv4(x)  
+        # TODO: correct final layer
         x = x + x1   
-        x = self.upconv5(x)  
+        #x = self.upconv5(x)  
               
         
         
