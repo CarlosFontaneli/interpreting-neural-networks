@@ -107,7 +107,10 @@ def plot_gradients_with_bounding_box(gradient, model_name, threshold=0.01):
             title=f"Gradient Analysis for {model_name}",
             labels={"x": "x-axis", "y": "y-axis"},
             color_continuous_scale=px.colors.diverging.RdYlGn,
-            range_color=[-np.abs(gradient).max(), np.abs(gradient).max()],
+            range_color=[
+                -np.abs(gradient[y_min : y_max + 1, x_min : x_max + 1]).max(),
+                np.abs(gradient[y_min : y_max + 1, x_min : x_max + 1]).max(),
+            ],
         )
 
         fig.update_layout(
@@ -254,7 +257,8 @@ app.layout = dbc.Container(
                         id="threshold-input",
                         type="number",
                         placeholder="Porcentage of max value of gradient as threshold (default 1%)",
-                        min=0.001,
+                        min=0.00001,
+                        step=0.001,
                         max=100,
                         style={
                             "text-align": "center",
@@ -372,7 +376,7 @@ def update_result_image(hover_data, selected_index):
             f"{GRADIENT_PATH}/jacobian_gradient_{selected_index}.pt"
         )
 
-        max_val = torch.max(torch.abs(loaded_gradient)).cpu().item()
+        max_val = torch.max(torch.abs(loaded_gradient[y, x])).cpu().item()
         # max_val = np.max([np.max(gradient) for gradient in gradient])
         fig = px.imshow(
             loaded_gradient[y, x].to("cpu"),
@@ -410,7 +414,7 @@ def update_gradient_display(hover_data_json, threshold, selected_index):
 
         # Return the gradient with the diverging color map
         fig = plot_gradients_with_bounding_box(
-            loaded_gradient[x, y].to("cpu").numpy(), "Model", threshold=threshold_val
+            loaded_gradient[y, x].to("cpu").numpy(), "Model", threshold=threshold_val
         )
         fig.update_layout(title=f"Pixels of gradient above: {threshold_val:.4f}")
         return fig, [
